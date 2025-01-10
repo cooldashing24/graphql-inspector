@@ -1,13 +1,14 @@
+#!/usr/bin/env node
+import yargs, { Argv } from 'yargs';
 import { useCommands } from '@graphql-inspector/commands';
 import { availableCommands, useConfig } from '@graphql-inspector/config';
 import { useLoaders } from '@graphql-inspector/loaders';
 import { Logger } from '@graphql-inspector/logger';
-import yargs, { Argv } from 'yargs';
 
 async function main() {
   const config = await useConfig();
   const loaders = useLoaders(config);
-  const commands = useCommands({config, loaders});
+  const commands = useCommands({ config, loaders });
 
   const root: Argv = yargs
     .scriptName('graphql-inspector')
@@ -42,6 +43,7 @@ async function main() {
       },
     });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   commands
     .reduce((cli, cmd) => cli.command(cmd), root)
     .demandCommand()
@@ -55,9 +57,7 @@ async function main() {
         Logger.error(`Command '${commandName}' not found`);
 
         if (availableCommands.includes(commandName)) {
-          Logger.log(
-            `  Try to install @graphql-inspector/${commandName}-command`,
-          );
+          Logger.log(`  Try to install @graphql-inspector/${commandName}-command`);
         }
       } else if (msg.includes('Not enough')) {
         Logger.error(msg);
